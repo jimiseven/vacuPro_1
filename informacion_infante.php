@@ -12,23 +12,46 @@ $result = $conn->query($query);
 $infante = $result->fetch_assoc();
 
 // Calcular la edad en meses
-function calcularEdadEnMeses($fechaNacimiento) {
+function calcularEdadEnMeses($fechaNacimiento)
+{
     $fechaActual = new DateTime();
     $fechaNac = new DateTime($fechaNacimiento);
     $diferencia = $fechaActual->diff($fechaNac);
     return ($diferencia->y * 12) + $diferencia->m;
 }
 
-// Consulta para obtener la información de las vacunas
-$query_vacunas = "SELECT vacunas.nombre AS vacuna, vacunaciones.fecha_administracion, vacunaciones.numero_dosis 
-                  FROM vacunaciones 
-                  JOIN vacunas ON vacunaciones.id_vacuna = vacunas.id 
-                  WHERE vacunaciones.id_nino = '$id_infante'";
+// Consulta para obtener todas las vacunas y sus fechas de administración para el infante específico
+$query_vacunas = "
+    SELECT vacunas.nombre AS vacuna, vacunaciones.numero_dosis, vacunaciones.fecha_administracion
+    FROM vacunas
+    LEFT JOIN vacunaciones 
+        ON vacunas.id = vacunaciones.id_vacuna 
+        AND vacunaciones.id_nino = '$id_infante'
+    ORDER BY vacunas.id, vacunaciones.numero_dosis";
 $result_vacunas = $conn->query($query_vacunas);
+
+// Organizar los datos de las dosis por vacuna
+$vacunas_data = [];
+while ($row_vacuna = $result_vacunas->fetch_assoc()) {
+    $vacuna_nombre = $row_vacuna['vacuna'];
+    $numero_dosis = $row_vacuna['numero_dosis'];
+    $fecha_administracion = $row_vacuna['fecha_administracion'];
+
+    // Inicializar las dosis para cada vacuna si aún no está en el array
+    if (!isset($vacunas_data[$vacuna_nombre])) {
+        $vacunas_data[$vacuna_nombre] = ['dosis1' => '-', 'dosis2' => '-', 'dosis3' => '-', 'dosis4' => '-'];
+    }
+
+    // Asignar la fecha a la dosis correspondiente
+    if ($numero_dosis) {
+        $vacunas_data[$vacuna_nombre]["dosis$numero_dosis"] = $fecha_administracion ? date("d - M", strtotime($fecha_administracion)) : '-';
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,6 +59,7 @@ $result_vacunas = $conn->query($query_vacunas);
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -47,19 +71,13 @@ $result_vacunas = $conn->query($query_vacunas);
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">
-                                <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
-                            </a>
+                            <a class="nav-link active" href="index.html">Vacunas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="infantes.php">
-                                <i class="bi bi-people me-2"></i> Infantes
-                            </a>
+                            <a class="nav-link" href="infantes.php">Infantes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="personal.php">
-                                <i class="bi bi-person-badge me-2"></i> Personal
-                            </a>
+                            <a class="nav-link" href="personal.php">Personal</a>
                         </li>
                     </ul>
                 </div>
@@ -101,22 +119,22 @@ $result_vacunas = $conn->query($query_vacunas);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while ($row_vacuna = $result_vacunas->fetch_assoc()) : ?>
+                            <?php foreach ($vacunas_data as $vacuna => $dosis) : ?>
                                 <tr>
-                                    <td><?php echo $row_vacuna['vacuna']; ?></td>
-                                    <td><?php echo ($row_vacuna['numero_dosis'] == 1) ? date("d - M", strtotime($row_vacuna['fecha_administracion'])) : '-'; ?></td>
-                                    <td><?php echo ($row_vacuna['numero_dosis'] == 2) ? date("d - M", strtotime($row_vacuna['fecha_administracion'])) : '-'; ?></td>
-                                    <td><?php echo ($row_vacuna['numero_dosis'] == 3) ? date("d - M", strtotime($row_vacuna['fecha_administracion'])) : '-'; ?></td>
-                                    <td><?php echo ($row_vacuna['numero_dosis'] == 4) ? date("d - M", strtotime($row_vacuna['fecha_administracion'])) : '-'; ?></td>
+                                    <td><?php echo $vacuna; ?></td>
+                                    <td><?php echo $dosis['dosis1']; ?></td>
+                                    <td><?php echo $dosis['dosis2']; ?></td>
+                                    <td><?php echo $dosis['dosis3']; ?></td>
+                                    <td><?php echo $dosis['dosis4']; ?></td>
                                 </tr>
-                            <?php endwhile; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Botones adicionales -->
                 <div class="mt-3">
-                    <button type="button" class="btn btn-outline-secondary">Registrar Vacuna</button>
+                    <a href="registro_vacuna.php?id=<?php echo $infante['id']; ?>" class="btn btn-outline-secondary">Registrar Vacuna</a>
                     <a href="calendario_infante.php?id=<?php echo $infante['id']; ?>" class="btn btn-outline-secondary">Calendario</a>
                 </div>
             </main>
@@ -125,4 +143,5 @@ $result_vacunas = $conn->query($query_vacunas);
 
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
