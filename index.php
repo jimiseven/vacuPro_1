@@ -1,16 +1,38 @@
 <?php
 include_once 'conexion.php';
 
-// Consulta para obtener la información de vacunaciones
+// Obtener el tipo de vacuna seleccionado en el filtro, si existe
+$filtro_vacuna = $_GET['vacuna'] ?? '';
+
+// Modificar la consulta según el filtro de tipo de vacuna
 $query = "SELECT 
             niños.nombre AS infante,
             vacuna_tipo.tipo AS vacuna,
             vacunaciones.fecha_administracion AS fecha_vacunacion
           FROM vacunaciones
           JOIN niños ON vacunaciones.id_nino = niños.id
-          JOIN vacuna_tipo ON vacunaciones.tipo_id = vacuna_tipo.id
-          ORDER BY fecha_vacunacion DESC";
-$result = $conn->query($query);
+          JOIN vacuna_tipo ON vacunaciones.tipo_id = vacuna_tipo.id";
+
+if ($filtro_vacuna) {
+    $query .= " WHERE vacuna_tipo.tipo = ?";
+}
+
+$query .= " ORDER BY fecha_vacunacion DESC";
+$stmt = $conn->prepare($query);
+
+if ($filtro_vacuna) {
+    $stmt->bind_param("s", $filtro_vacuna);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Obtener todos los tipos de vacunas para el filtro
+$query_tipos_vacunas = "SELECT DISTINCT tipo FROM vacuna_tipo";
+$result_tipos_vacunas = $conn->query($query_tipos_vacunas);
+
+// Calcular el total de registros según el filtro
+$total_vacunas = $result->num_rows;
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +42,7 @@ $result = $conn->query($query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VAC-PRO</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- Archivo CSS personalizado para estilos adicionales -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -57,6 +79,29 @@ $result = $conn->query($query);
                     <h1 class="h2">Vacunas</h1>
                     <a href="registro_vacunacion.php" class="btn btn-outline-secondary">Registrar</a>
                 </div>
+
+                <!-- Filtro por tipo de vacuna -->
+                <form method="get" action="index.php" class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="vacuna" class="form-label">Filtrar por tipo de vacuna:</label>
+                            <select name="vacuna" id="vacuna" class="form-select">
+                                <option value="">Todos</option>
+                                <?php while ($row_tipo = $result_tipos_vacunas->fetch_assoc()) : ?>
+                                    <option value="<?php echo $row_tipo['tipo']; ?>" <?php if ($row_tipo['tipo'] == $filtro_vacuna) echo 'selected'; ?>>
+                                        <?php echo $row_tipo['tipo']; ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Mostrar el total de vacunas según el filtro -->
+                <h5>Total de vacunas administradas: <?php echo $total_vacunas; ?></h5>
 
                 <!-- Tabla de vacunaciones -->
                 <div class="table-responsive">
