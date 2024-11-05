@@ -36,13 +36,19 @@ if ($id_personal) {
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Vacunas</a>
+                            <a class="nav-link active" href="index.html">
+                                <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Infantes</a>
+                            <a class="nav-link" href="infantes.php">
+                                <i class="bi bi-people me-2"></i> Infantes
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Personal</a>
+                            <a class="nav-link" href="personal.php">
+                                <i class="bi bi-person-badge me-2"></i> Personal
+                            </a>
                         </li>
                     </ul>
                 </div>

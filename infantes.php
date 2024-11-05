@@ -18,7 +18,8 @@ if (!empty($searchTerm)) {
 $result = $conn->query($query);
 
 // Función para calcular la edad en meses
-function calcularEdadEnMeses($fechaNacimiento) {
+function calcularEdadEnMeses($fechaNacimiento)
+{
     $fechaActual = new DateTime();
     $fechaNac = new DateTime($fechaNacimiento);
     $diferencia = $fechaActual->diff($fechaNac);
@@ -28,6 +29,7 @@ function calcularEdadEnMeses($fechaNacimiento) {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,6 +37,7 @@ function calcularEdadEnMeses($fechaNacimiento) {
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -46,7 +49,7 @@ function calcularEdadEnMeses($fechaNacimiento) {
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">
+                            <a class="nav-link active" href="index.php">
                                 <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
                             </a>
                         </li>
@@ -70,7 +73,7 @@ function calcularEdadEnMeses($fechaNacimiento) {
                     <h1 class="h2">Infantes</h1>
                     <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='registro_infante.php'">Registrar</button>
                 </div>
-                
+
                 <!-- Buscador -->
                 <form class="input-group mb-3" method="GET" action="infantes.php">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
@@ -106,4 +109,5 @@ function calcularEdadEnMeses($fechaNacimiento) {
 
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

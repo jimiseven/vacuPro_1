@@ -1,6 +1,6 @@
 <?php
 $host = "localhost";
-$dbname = "vacupro_1";
+$dbname = "vacupro_2";
 $username = "root";
 $password = "";
 

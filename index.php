@@ -1,3 +1,18 @@
+<?php
+include_once 'conexion.php';
+
+// Consulta para obtener la información de vacunaciones
+$query = "SELECT 
+            niños.nombre AS infante,
+            vacuna_tipo.tipo AS vacuna,
+            vacunaciones.fecha_administracion AS fecha_vacunacion
+          FROM vacunaciones
+          JOIN niños ON vacunaciones.id_nino = niños.id
+          JOIN vacuna_tipo ON vacunaciones.tipo_id = vacuna_tipo.id
+          ORDER BY fecha_vacunacion DESC";
+$result = $conn->query($query);
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,7 +33,7 @@
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">
+                            <a class="nav-link active" href="index.php">
                                 <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
                             </a>
                         </li>
@@ -40,9 +55,10 @@
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Vacunas</h1>
-                    <button type="button" class="btn btn-outline-secondary">Reporte</button>
+                    <a href="registro_vacunacion.php" class="btn btn-outline-secondary">Registrar</a>
                 </div>
-                <!-- Tabla de ejemplo -->
+
+                <!-- Tabla de vacunaciones -->
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -53,31 +69,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Pedro Mons</td>
-                                <td>Tuberculosis</td>
-                                <td>19 - oct</td>
-                            </tr>
-                            <tr>
-                                <td>Ana Yupanki</td>
-                                <td>Hepatitis B</td>
-                                <td>30 - oct</td>
-                            </tr>
-                            <tr>
-                                <td>Felipe Toledo</td>
-                                <td>Poliovirus</td>
-                                <td>13 - sep</td>
-                            </tr>
-                            <tr>
-                                <td>Juan Álvarez</td>
-                                <td>Difteria</td>
-                                <td>29 - sep</td>
-                            </tr>
-                            <tr>
-                                <td>Mario Molina</td>
-                                <td>Tétanos</td>
-                                <td>30 - sep</td>
-                            </tr>
+                            <?php while ($row = $result->fetch_assoc()) : ?>
+                                <tr>
+                                    <td><?php echo $row['infante']; ?></td>
+                                    <td><?php echo $row['vacuna']; ?></td>
+                                    <td><?php echo date("d - M", strtotime($row['fecha_vacunacion'])); ?></td>
+                                </tr>
+                            <?php endwhile; ?>
                         </tbody>
                     </table>
                     <button type="button" class="btn btn-outline-secondary mt-3">Imprimir</button>
