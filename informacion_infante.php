@@ -57,7 +57,7 @@ $result_vacunas = $conn->query($query_vacunas);
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="personal.php">
                                 <i class="bi bi-person-badge me-2"></i> Personal
                             </a>
                         </li>
