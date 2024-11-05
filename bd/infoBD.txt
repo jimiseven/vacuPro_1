@@ -1,0 +1,30 @@
+create table nino (
+  id bigint primary key generated always as identity,
+  nombre text not null,
+  apellido text not null,
+  fecha_nacimiento date not null
+);
+
+create table vacunas (
+  id bigint primary key generated always as identity,
+  tipo text not null,
+  dosis text not null,
+  fecha_vacunacion date not null,
+  nino_id bigint not null,
+  foreign key (nino_id) references nino (id)
+);
+
+create table vacuna_tipo (
+  id bigint primary key generated always as identity,
+  tipo text not null unique,
+  dosis_requeridas int not null
+);
+
+alter table vacunas
+drop tipo;
+
+alter table vacunas
+add column tipo_id bigint not null;
+
+alter table vacunas
+add foreign key (tipo_id) references vacuna_tipo (id);
