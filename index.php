@@ -40,7 +40,7 @@ $total_vacunas = $result->num_rows;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VAC-PRO</title>
+    <title>VAC-SOFT</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -51,7 +51,7 @@ $total_vacunas = $result->num_rows;
             <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
                 <div class="position-sticky">
                     <div class="sidebar-header p-3 text-center">
-                        <h3 class="text-white"><strong>VAC-PRO</strong></h3>
+                        <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">

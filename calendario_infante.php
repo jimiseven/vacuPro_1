@@ -78,7 +78,7 @@ $result_tipos_vacunas = $conn->query($query_tipos_vacunas);
             <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
                 <div class="position-sticky">
                     <div class="sidebar-header p-3 text-center">
-                        <h3 class="text-white"><strong>VAC-PRO</strong></h3>
+                        <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
