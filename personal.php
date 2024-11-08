@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 // Consulta para obtener los datos del personal
 $query = "SELECT id, nombre, apellido, puesto, celular FROM personal";
@@ -8,6 +9,7 @@ $result = $conn->query($query);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,12 +17,13 @@ $result = $conn->query($query);
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
-                <div class="position-sticky">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark d-flex flex-column">
+                <div>
                     <div class="sidebar-header p-3 text-center">
                         <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
@@ -41,6 +44,10 @@ $result = $conn->query($query);
                             </a>
                         </li>
                     </ul>
+                </div>
+                <!-- Botón de cerrar sesión -->
+                <div class="mt-auto text-center p-3">
+                    <a href="logout.php" class="btn btn-danger w-100">Cerrar Sesión</a>
                 </div>
             </nav>
 
@@ -88,4 +95,5 @@ $result = $conn->query($query);
 
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 // Verificar si el ID del personal está presente en la URL
 $id_personal = $_GET['id'] ?? null;
@@ -35,14 +36,14 @@ if (!$personal) {
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
-                <div class="position-sticky">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark d-flex flex-column">
+                <div>
                     <div class="sidebar-header p-3 text-center">
                         <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link active" href="index.php">
                                 <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
                             </a>
                         </li>
@@ -52,11 +53,15 @@ if (!$personal) {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="personal.php">
+                            <a class="nav-link" href="personal.php">
                                 <i class="bi bi-person-badge me-2"></i> Personal
                             </a>
                         </li>
                     </ul>
+                </div>
+                <!-- Botón de cerrar sesión -->
+                <div class="mt-auto text-center p-3">
+                    <a href="logout.php" class="btn btn-danger w-100">Cerrar Sesión</a>
                 </div>
             </nav>
 
@@ -102,7 +107,8 @@ if (!$personal) {
                 <div class="modal-body">
                     <p>¿Estás seguro de que deseas eliminar al personal
                         <strong><?php echo htmlspecialchars($personal['nombre'] . ' ' . $personal['apellido']); ?></strong>?
-                        Esta acción no se puede deshacer.</p>
+                        Esta acción no se puede deshacer.
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

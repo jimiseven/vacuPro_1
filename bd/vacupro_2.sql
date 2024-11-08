@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-11-2024 a las 17:03:47
+-- Tiempo de generación: 08-11-2024 a las 21:43:40
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -133,6 +133,26 @@ INSERT INTO `vacuna_tipo` (`id`, `tipo`, `dosis_requeridas`) VALUES
 (5, 'Tétanos', 3),
 (6, 'Tos Ferina', 3);
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `vacupro_2_usuarios`
+--
+
+CREATE TABLE `vacupro_2_usuarios` (
+  `id` bigint(20) NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `contrasena` varchar(255) NOT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `vacupro_2_usuarios`
+--
+
+INSERT INTO `vacupro_2_usuarios` (`id`, `usuario`, `contrasena`, `fecha_registro`) VALUES
+(1, 'admin', '0192023a7bbd73250516f069df18b500', '2024-11-08 20:23:34');
+
 --
 -- Índices para tablas volcadas
 --
@@ -165,6 +185,13 @@ ALTER TABLE `vacuna_tipo`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `vacupro_2_usuarios`
+--
+ALTER TABLE `vacupro_2_usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `usuario` (`usuario`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -191,6 +218,12 @@ ALTER TABLE `vacunaciones`
 --
 ALTER TABLE `vacuna_tipo`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `vacupro_2_usuarios`
+--
+ALTER TABLE `vacupro_2_usuarios`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas

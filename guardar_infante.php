@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 // Obtener los datos del formulario
 $nombre = $_POST['nombre'];

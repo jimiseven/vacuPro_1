@@ -1,5 +1,10 @@
+
+<?php
+include_once 'proteger.php'; 
+?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +12,19 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css"> <!-- Archivo CSS personalizado, si necesitas más estilos -->
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
-                <div class="position-sticky">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark d-flex flex-column">
+                <div>
                     <div class="sidebar-header p-3 text-center">
                         <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">
+                            <a class="nav-link active" href="index.php">
                                 <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
                             </a>
                         </li>
@@ -33,6 +39,10 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+                <!-- Botón de cerrar sesión -->
+                <div class="mt-auto text-center p-3">
+                    <a href="logout.php" class="btn btn-danger w-100">Cerrar Sesión</a>
                 </div>
             </nav>
 
@@ -117,4 +127,5 @@
 
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

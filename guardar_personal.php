@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 // Verificar que los datos se reciban correctamente del formulario
 if (isset($_POST['nombre'], $_POST['apellido'], $_POST['cedula_identidad'], $_POST['celular'], $_POST['puesto'])) {

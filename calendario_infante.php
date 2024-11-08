@@ -78,14 +78,14 @@ $result_tipos_vacunas = $conn->query($query_tipos_vacunas);
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
-                <div class="position-sticky">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark d-flex flex-column">
+                <div>
                     <div class="sidebar-header p-3 text-center">
                         <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php">
+                            <a class="nav-link active" href="index.php">
                                 <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
                             </a>
                         </li>
@@ -100,6 +100,10 @@ $result_tipos_vacunas = $conn->query($query_tipos_vacunas);
                             </a>
                         </li>
                     </ul>
+                </div>
+                <!-- Botón de cerrar sesión -->
+                <div class="mt-auto text-center p-3">
+                    <a href="logout.php" class="btn btn-danger w-100">Cerrar Sesión</a>
                 </div>
             </nav>
 

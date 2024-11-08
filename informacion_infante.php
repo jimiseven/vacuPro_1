@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 // Habilitar informes de errores para depuración
 ini_set('display_errors', 1);
@@ -65,8 +66,8 @@ $result_vacunas = $stmt_vacunas->get_result();
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
-                <div class="position-sticky">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark d-flex flex-column">
+                <div>
                     <div class="sidebar-header p-3 text-center">
                         <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
@@ -87,6 +88,10 @@ $result_vacunas = $stmt_vacunas->get_result();
                             </a>
                         </li>
                     </ul>
+                </div>
+                <!-- Botón de cerrar sesión -->
+                <div class="mt-auto text-center p-3">
+                    <a href="logout.php" class="btn btn-danger w-100">Cerrar Sesión</a>
                 </div>
             </nav>
 

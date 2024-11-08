@@ -1,6 +1,6 @@
 <?php
 include_once 'conexion.php';
-
+include_once 'proteger.php';
 // Obtener el tipo de vacuna y meses seleccionados en los filtros, si existen
 $filtro_vacuna = $_GET['vacuna'] ?? '';
 $filtro_meses = $_GET['meses'] ?? '';
@@ -66,8 +66,8 @@ $total_vacunas = $result->num_rows;
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark">
-                <div class="position-sticky">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar bg-dark d-flex flex-column">
+                <div>
                     <div class="sidebar-header p-3 text-center">
                         <h3 class="text-white"><strong>VAC-SOFT</strong></h3>
                     </div>
@@ -89,7 +89,13 @@ $total_vacunas = $result->num_rows;
                         </li>
                     </ul>
                 </div>
+                <!-- Botón de cerrar sesión -->
+                <div class="mt-auto text-center p-3">
+                    <a href="logout.php" class="btn btn-danger w-100">Cerrar Sesión</a>
+                </div>
             </nav>
+
+
 
             <!-- Contenido principal -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -129,6 +135,13 @@ $total_vacunas = $result->num_rows;
                         </div>
                     </div>
                 </form>
+                <div class="mt-3">
+                    <form method="get" action="generar_reporte.php" target="_blank">
+                        <input type="hidden" name="vacuna" value="<?php echo $filtro_vacuna; ?>">
+                        <input type="hidden" name="meses" value="<?php echo $filtro_meses; ?>">
+                        <button type="submit" class="btn btn-outline-secondary">Descargar Reporte PDF</button>
+                    </form>
+                </div>
 
                 <!-- Mostrar el total de vacunas según los filtros -->
                 <h5>Total de vacunas administradas: <?php echo $total_vacunas; ?></h5>
@@ -158,13 +171,7 @@ $total_vacunas = $result->num_rows;
         </div>
     </div>
     <!-- Botón para descargar el reporte -->
-    <div class="mt-3">
-        <form method="get" action="generar_reporte.php" target="_blank">
-            <input type="hidden" name="vacuna" value="<?php echo $filtro_vacuna; ?>">
-            <input type="hidden" name="meses" value="<?php echo $filtro_meses; ?>">
-            <button type="submit" class="btn btn-outline-secondary">Descargar Reporte PDF</button>
-        </form>
-    </div>
+
 
 
     <script src="js/bootstrap.bundle.min.js"></script>

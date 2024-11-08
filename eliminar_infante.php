@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 // Habilitar informes de errores para depuración
 ini_set('display_errors', 1);

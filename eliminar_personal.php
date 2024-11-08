@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_personal = $_POST['id'];

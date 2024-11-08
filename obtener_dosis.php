@@ -1,5 +1,6 @@
 <?php
 include_once 'conexion.php';
+include_once 'proteger.php';
 
 $id_nino = $_GET['id_nino'];
 $tipo_id = $_GET['tipo_id'];
