@@ -26,7 +26,7 @@ $result = $conn->query($query);
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.html">
+                            <a class="nav-link active" href="index.php">
                                 <i class="bi bi-arrow-right-circle me-2"></i> Vacunas
                             </a>
                         </li>

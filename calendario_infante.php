@@ -20,7 +20,8 @@ $result_infante = $stmt->get_result();
 $infante = $result_infante->fetch_assoc();
 
 // Calcular la edad en meses
-function calcularEdadEnMeses($fechaNacimiento) {
+function calcularEdadEnMeses($fechaNacimiento)
+{
     $fechaActual = new DateTime();
     $fechaNac = new DateTime($fechaNacimiento);
     $diferencia = $fechaActual->diff($fechaNac);
@@ -64,6 +65,7 @@ $result_tipos_vacunas = $conn->query($query_tipos_vacunas);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,6 +73,7 @@ $result_tipos_vacunas = $conn->query($query_tipos_vacunas);
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -138,55 +141,16 @@ $result_tipos_vacunas = $conn->query($query_tipos_vacunas);
 
                 <!-- Botón para registrar vacuna con modal -->
                 <div class="mt-3">
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarVacuna">Registrar Vacuna</button>
+                    <a href="informacion_infante.php?id=<?php echo $id_infante; ?>" class="btn btn-success">Atrás</a>
                 </div>
+
             </main>
         </div>
     </div>
 
-    <!-- Modal para registrar vacuna -->
-    <div class="modal fade" id="modalRegistrarVacuna" tabindex="-1" aria-labelledby="modalRegistrarVacunaLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalRegistrarVacunaLabel">Registrar Vacuna</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <form action="guardar_vacunacion.php" method="post">
-                    <div class="modal-body">
-                        <input type="hidden" name="id_infante" value="<?php echo $id_infante; ?>">
-                        <div class="mb-3">
-                            <label for="tipo_id" class="form-label">Vacuna</label>
-                            <select name="tipo_id" id="tipo_id" class="form-select" required>
-                                <option value="" selected disabled>Seleccione una vacuna</option>
-                                <?php while ($vacuna = $result_tipos_vacunas->fetch_assoc()) : ?>
-                                    <option value="<?php echo $vacuna['id']; ?>"><?php echo $vacuna['tipo']; ?></option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_personal" class="form-label">Personal que administra</label>
-                            <select name="id_personal" id="id_personal" class="form-select" required>
-                                <option value="" selected disabled>Seleccione el personal</option>
-                                <?php while ($personal = $result_personal->fetch_assoc()) : ?>
-                                    <option value="<?php echo $personal['id']; ?>"><?php echo $personal['nombre_completo']; ?></option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fecha_administracion" class="form-label">Fecha de Administración</label>
-                            <input type="date" name="fecha_administracion" id="fecha_administracion" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
 
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

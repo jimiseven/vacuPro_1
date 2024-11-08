@@ -1,10 +1,11 @@
 <?php
 include_once 'conexion.php';
 
-// Obtener el tipo de vacuna seleccionado en el filtro, si existe
+// Obtener el tipo de vacuna y meses seleccionados en los filtros, si existen
 $filtro_vacuna = $_GET['vacuna'] ?? '';
+$filtro_meses = $_GET['meses'] ?? '';
 
-// Modificar la consulta según el filtro de tipo de vacuna
+// Construir la consulta base
 $query = "SELECT 
             niños.nombre AS infante,
             vacuna_tipo.tipo AS vacuna,
@@ -13,15 +14,30 @@ $query = "SELECT
           JOIN niños ON vacunaciones.id_nino = niños.id
           JOIN vacuna_tipo ON vacunaciones.tipo_id = vacuna_tipo.id";
 
+// Agregar condiciones según los filtros
+$condiciones = [];
+$parametros = [];
+
 if ($filtro_vacuna) {
-    $query .= " WHERE vacuna_tipo.tipo = ?";
+    $condiciones[] = "vacuna_tipo.tipo = ?";
+    $parametros[] = $filtro_vacuna;
+}
+
+if ($filtro_meses) {
+    $condiciones[] = "MONTH(vacunaciones.fecha_administracion) = ?";
+    $parametros[] = $filtro_meses;
+}
+
+if (!empty($condiciones)) {
+    $query .= " WHERE " . implode(" AND ", $condiciones);
 }
 
 $query .= " ORDER BY fecha_vacunacion DESC";
 $stmt = $conn->prepare($query);
 
-if ($filtro_vacuna) {
-    $stmt->bind_param("s", $filtro_vacuna);
+if (!empty($parametros)) {
+    $tipos_parametros = str_repeat("s", count($parametros));
+    $stmt->bind_param($tipos_parametros, ...$parametros);
 }
 
 $stmt->execute();
@@ -31,12 +47,13 @@ $result = $stmt->get_result();
 $query_tipos_vacunas = "SELECT DISTINCT tipo FROM vacuna_tipo";
 $result_tipos_vacunas = $conn->query($query_tipos_vacunas);
 
-// Calcular el total de registros según el filtro
+// Calcular el total de registros según los filtros
 $total_vacunas = $result->num_rows;
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,6 +61,7 @@ $total_vacunas = $result->num_rows;
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -80,7 +98,7 @@ $total_vacunas = $result->num_rows;
                     <a href="registro_vacunacion.php" class="btn btn-outline-secondary">Registrar</a>
                 </div>
 
-                <!-- Filtro por tipo de vacuna -->
+                <!-- Filtro por tipo de vacuna y meses -->
                 <form method="get" action="index.php" class="mb-3">
                     <div class="row">
                         <div class="col-md-4">
@@ -94,13 +112,25 @@ $total_vacunas = $result->num_rows;
                                 <?php endwhile; ?>
                             </select>
                         </div>
+                        <div class="col-md-4">
+                            <label for="meses" class="form-label">Filtrar por mes:</label>
+                            <select name="meses" id="meses" class="form-select">
+                                <option value="">Todos</option>
+                                <?php
+                                for ($mes = 1; $mes <= 12; $mes++) {
+                                    $nombre_mes = strftime('%B', mktime(0, 0, 0, $mes, 1));
+                                    echo "<option value='$mes'" . ($mes == $filtro_meses ? ' selected' : '') . ">$nombre_mes</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary">Filtrar</button>
                         </div>
                     </div>
                 </form>
 
-                <!-- Mostrar el total de vacunas según el filtro -->
+                <!-- Mostrar el total de vacunas según los filtros -->
                 <h5>Total de vacunas administradas: <?php echo $total_vacunas; ?></h5>
 
                 <!-- Tabla de vacunaciones -->
@@ -123,12 +153,21 @@ $total_vacunas = $result->num_rows;
                             <?php endwhile; ?>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-outline-secondary mt-3">Imprimir</button>
                 </div>
             </main>
         </div>
     </div>
+    <!-- Botón para descargar el reporte -->
+    <div class="mt-3">
+        <form method="get" action="generar_reporte.php" target="_blank">
+            <input type="hidden" name="vacuna" value="<?php echo $filtro_vacuna; ?>">
+            <input type="hidden" name="meses" value="<?php echo $filtro_meses; ?>">
+            <button type="submit" class="btn btn-outline-secondary">Descargar Reporte PDF</button>
+        </form>
+    </div>
+
 
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
