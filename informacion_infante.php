@@ -51,6 +51,7 @@ $result_vacunas = $stmt_vacunas->get_result();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,6 +59,7 @@ $result_vacunas = $stmt_vacunas->get_result();
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -91,7 +93,24 @@ $result_vacunas = $stmt_vacunas->get_result();
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <h1 class="mt-4 mb-4">Datos</h1>
 
-                <div class="row">
+                <!-- Botón para editar datos -->
+                <div class="mt-3">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalEditarInfante">
+                        Editar Datos del Infante
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarInfante">
+                        Eliminar Infante
+                    </button>
+                </div>
+
+                <!-- Notificaciones -->
+                <?php if (isset($_GET['success'])): ?>
+                    <div class="alert alert-success mt-3">Datos actualizados correctamente.</div>
+                <?php elseif (isset($_GET['error'])): ?>
+                    <div class="alert alert-danger mt-3">Hubo un problema al actualizar los datos.</div>
+                <?php endif; ?>
+
+                <div class="row mt-4">
                     <!-- Datos del infante -->
                     <div class="col-md-6">
                         <h4>Datos infante</h4>
@@ -146,75 +165,142 @@ $result_vacunas = $stmt_vacunas->get_result();
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Botones adicionales -->
-                <div class="mt-3">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalRegistrarVacuna">Registrar Vacuna</button>
-                    <a href="calendario_infante.php?id=<?php echo $id_infante; ?>" class="btn btn-outline-secondary">Calendario</a>
-                </div>
-
-                <!-- Modal para registrar vacuna -->
-                <div class="modal fade" id="modalRegistrarVacuna" tabindex="-1" aria-labelledby="modalRegistrarVacunaLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form action="guardar_vacunacion.php" method="POST">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalRegistrarVacunaLabel">Registrar Vacuna</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="hidden" name="id_infante" value="<?php echo $id_infante; ?>">
-                                    <p><strong>Nombre del Infante:</strong> <?php echo htmlspecialchars($infante['nombre'] . ' ' . $infante['apellido_paterno'] . ' ' . $infante['apellido_materno']); ?></p>
-                                    
-                                    <!-- Selección de tipo de vacuna -->
-                                    <div class="mb-3">
-                                        <label for="tipo_id" class="form-label">Tipo de Vacuna</label>
-                                        <select class="form-select" id="tipo_id" name="tipo_id" required>
-                                            <option value="" disabled selected>Seleccione una vacuna</option>
-                                            <?php
-                                            $query_vacunas = "SELECT id, tipo FROM vacuna_tipo";
-                                            $result_vacunas = $conn->query($query_vacunas);
-                                            while ($row_vacuna = $result_vacunas->fetch_assoc()) {
-                                                echo "<option value='{$row_vacuna['id']}'>{$row_vacuna['tipo']}</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-
-                                    <!-- Selección del personal que administra -->
-                                    <div class="mb-3">
-                                        <label for="id_personal" class="form-label">Personal que Administra</label>
-                                        <select class="form-select" id="id_personal" name="id_personal" required>
-                                            <option value="" disabled selected>Seleccione el personal</option>
-                                            <?php
-                                            $query_personal = "SELECT id, nombre, apellido FROM personal";
-                                            $result_personal = $conn->query($query_personal);
-                                            while ($row_personal = $result_personal->fetch_assoc()) {
-                                                echo "<option value='{$row_personal['id']}'>{$row_personal['nombre']} {$row_personal['apellido']}</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-
-                                    <!-- Fecha de administración -->
-                                    <div class="mb-3">
-                                        <label for="fecha_administracion" class="form-label">Fecha de Administración</label>
-                                        <input type="date" class="form-control" id="fecha_administracion" name="fecha_administracion" required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
             </main>
         </div>
     </div>
 
+    <!-- Modal para editar los datos del infante -->
+    <div class="modal fade" id="modalEditarInfante" tabindex="-1" aria-labelledby="modalEditarInfanteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="editar_infante.php" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarInfanteLabel">Editar Datos del Infante</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Campo oculto para enviar el ID del infante -->
+                        <input type="hidden" name="id" value="<?php echo $infante['id']; ?>">
+
+                        <!-- Datos del infante -->
+                        <h5 class="mb-3">Datos del Infante</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre"
+                                    value="<?php echo isset($infante['nombre']) ? htmlspecialchars($infante['nombre']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="apellido_paterno" class="form-label">Apellido Paterno</label>
+                                <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno"
+                                    value="<?php echo isset($infante['apellido_paterno']) ? htmlspecialchars($infante['apellido_paterno']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="apellido_materno" class="form-label">Apellido Materno</label>
+                                <input type="text" class="form-control" id="apellido_materno" name="apellido_materno"
+                                    value="<?php echo isset($infante['apellido_materno']) ? htmlspecialchars($infante['apellido_materno']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento"
+                                    value="<?php echo isset($infante['fecha_nacimiento']) ? htmlspecialchars($infante['fecha_nacimiento']) : ''; ?>"
+                                    readonly>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="numero_cedula_identidad" class="form-label">Cédula de Identidad</label>
+                                <input type="text" class="form-control" id="numero_cedula_identidad" name="numero_cedula_identidad"
+                                    value="<?php echo isset($infante['numero_cedula_identidad']) ? htmlspecialchars($infante['numero_cedula_identidad']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="numero_acta_nacimiento" class="form-label">Número de Acta de Nacimiento</label>
+                                <input type="text" class="form-control" id="numero_acta_nacimiento" name="numero_acta_nacimiento"
+                                    value="<?php echo isset($infante['numero_acta_nacimiento']) ? htmlspecialchars($infante['numero_acta_nacimiento']) : ''; ?>"
+                                    required>
+                            </div>
+                        </div>
+
+                        <!-- Datos del tutor -->
+                        <h5 class="mb-3">Datos del Tutor</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre_responsable" class="form-label">Nombre del Tutor</label>
+                                <input type="text" class="form-control" id="nombre_responsable" name="nombre_responsable"
+                                    value="<?php echo isset($infante['nombre_responsable']) ? htmlspecialchars($infante['nombre_responsable']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="apellido_paterno_tutor" class="form-label">Apellido Paterno del Tutor</label>
+                                <input type="text" class="form-control" id="apellido_paterno_tutor" name="apellido_paterno_tutor"
+                                    value="<?php echo isset($infante['apellido_paterno_tutor']) ? htmlspecialchars($infante['apellido_paterno_tutor']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="apellido_materno_tutor" class="form-label">Apellido Materno del Tutor</label>
+                                <input type="text" class="form-control" id="apellido_materno_tutor" name="apellido_materno_tutor"
+                                    value="<?php echo isset($infante['apellido_materno_tutor']) ? htmlspecialchars($infante['apellido_materno_tutor']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="numero_cedula_tutor" class="form-label">Cédula de Identidad del Tutor</label>
+                                <input type="text" class="form-control" id="numero_cedula_tutor" name="numero_cedula_tutor"
+                                    value="<?php echo isset($infante['numero_cedula_tutor']) ? htmlspecialchars($infante['numero_cedula_tutor']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="telefono_tutor" class="form-label">Teléfono del Tutor</label>
+                                <input type="text" class="form-control" id="telefono_tutor" name="telefono_tutor"
+                                    value="<?php echo isset($infante['telefono_tutor']) ? htmlspecialchars($infante['telefono_tutor']) : ''; ?>"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="relacion" class="form-label">Relación con el Infante</label>
+                                <input type="text" class="form-control" id="relacion" name="relacion"
+                                    value="<?php echo isset($infante['relacion']) ? htmlspecialchars($infante['relacion']) : ''; ?>"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal de confirmación para eliminar al infante -->
+    <div class="modal fade" id="modalEliminarInfante" tabindex="-1" aria-labelledby="modalEliminarInfanteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="modalEliminarInfanteLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar al infante <strong><?php echo htmlspecialchars($infante['nombre'] . ' ' . $infante['apellido_paterno']); ?></strong> y todos sus datos relacionados? Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form action="eliminar_infante.php" method="POST" style="display: inline;">
+                        <input type="hidden" name="id" value="<?php echo $infante['id']; ?>">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
