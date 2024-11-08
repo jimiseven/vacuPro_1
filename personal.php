@@ -2,7 +2,7 @@
 include_once 'conexion.php';
 
 // Consulta para obtener los datos del personal
-$query = "SELECT id, nombre, apellido FROM personal";
+$query = "SELECT id, nombre, apellido, puesto, celular FROM personal";
 $result = $conn->query($query);
 ?>
 
@@ -62,15 +62,21 @@ $result = $conn->query($query);
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>Información</th>
+                                <th>Nombre y Apellido</th>
+                                <th>Puesto</th>
+                                <th>Celular</th>
+                                <th class="text-end">Información</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php while ($row = $result->fetch_assoc()) : ?>
                                 <tr>
                                     <td><?php echo $row['nombre'] . ' ' . $row['apellido']; ?></td>
-                                    <td><a href="informacion_personal.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Información</a></td>
+                                    <td><?php echo $row['puesto']; ?></td>
+                                    <td><?php echo $row['celular']; ?></td>
+                                    <td class="text-end">
+                                        <a href="informacion_personal.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Información</a>
+                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>
